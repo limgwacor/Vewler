@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant FactSnap - Rangkuman Fakta dari Tautan & Gambar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dark-bg: #0f0f17;
+            --darker-bg: #090912;
+            --primary: #8a2be2;
+            --primary-light: #9d45e5;
+            --secondary: #00f0ff;
+            --accent: #ff00d6;
+            --text: #ffffff;
+            --text-secondary: #b0b0d0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: var(--dark-bg);
+            color: var(--text);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 20%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            background: var(--darker-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(138, 43, 226, 0.2);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--secondary);
+        }
+        
+        .section-title i {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .url-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(20, 20, 40, 0.7);
+            border: 2px solid rgba(138, 43, 226, 0.4);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .url-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+        }
+        
+        .file-upload {
+            position: relative;
+            margin-top: 10px;
+        }
+        
+        .file-label {
+            display: block;
+            padding: 15px;
+            background: rgba(20, 20, 40, 0.7);
+            border: 2px dashed rgba(0, 240, 255, 0.4);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-label:hover {
+            background: rgba(30, 30, 50, 0.8);
+            border-color: var(--secondary);
+        }
+        
+        .file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .file-info {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(138, 43, 226, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .result-section {
+            flex: 1;
+            min-width: 300px;
+            background: var(--darker-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+        
+        .result-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 300px;
+            color: var(--text-secondary);
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+        }
+        
+        .result-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .result-content {
+            display: none;
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .result-icon {
+            font-size: 2rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+        }
+        
+        .result-body {
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            background: rgba(30, 30, 50, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .result-item-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 50px 0;
+        }
+        
+        .feature-card {
+            background: var(--darker-bg);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(138, 43, 226, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-light);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+        
+        .feature-desc {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--text-secondary);
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(138, 43, 226, 0.3);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .image-preview {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-light);
+        }
+        
+        .source-info {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            padding: 10px;
+            background: rgba(30, 30, 50, 0.3);
+            border-radius: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-bolt"></i> Instant FactSnap
+            </div>
+            <p class="tagline">Tempel tautan atau unggah gambar untuk mendapatkan rangkuman fakta secara instan</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title"><i class="fas fa-paper-plane"></i> Masukkan Konten</h2>
+                
+                <div class="input-group">
+                    <label class="input-label" for="url-input">Tempel Tautan:</label>
+                    <input type="text" id="url-input" class="url-input" placeholder="https://contoh.com/artikel-menarik">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">Atau Unggah Gambar:</label>
+                    <div class="file-upload">
+                        <label for="file-input" class="file-label">
+                            <i class="fas fa-cloud-upload-alt"></i> Pilih Gambar atau Screenshot
+                        </label>
+                        <input type="file" id="file-input" class="file-input" accept="image/*">
+                    </div>
+                    <div class="file-info">Format: JPG, PNG, GIF (maks. 5MB)</div>
+                </div>
+                
+                <div class="image-preview" id="image-preview">
+                    <img id="preview-img" src="" alt="Preview gambar">
+                </div>
+                
+                <button id="process-btn" class="btn">
+                    <i class="fas fa-magic"></i> Rangkum Konten
+                </button>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="section-title"><i class="fas fa-file-alt"></i> Hasil Rangkuman</h2>
+                
+                <div class="loading" id="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Menganalisis konten dan mencari fakta terkait...</p>
+                </div>
+                
+                <div class="result-placeholder" id="result-placeholder">
+                    <i class="fas fa-search"></i>
+                    <h3>Hasil rangkuman akan muncul di sini</h3>
+                    <p>Tempel tautan atau unggah gambar untuk memulai</p>
+                </div>
+                
+                <div class="result-content" id="result-content">
+                    <div class="result-header">
+                        <i class="fas fa-file-alt result-icon"></i>
+                        <h3 class="result-title" id="result-title">Rangkuman Konten</h3>
+                    </div>
+                    
+                    <div class="result-body" id="result-body">
+                        <!-- Hasil akan dimasukkan di sini melalui JavaScript -->
+                    </div>
+                    
+                    <div class="source-info" id="source-info">
+                        Sumber: <span id="source-url">https://contoh.com/artikel-menarik</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-link"></i>
+                </div>
+                <h3 class="feature-title">Analisis Tautan</h3>
+                <p class="feature-desc">Rangkum artikel, berita, atau halaman web dengan satu klik</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-image"></i>
+                </div>
+                <h3 class="feature-title">Pemrosesan Gambar</h3>
+                <p class="feature-desc">Ekstrak dan rangkum teks dari screenshot, infografis, atau gambar</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="feature-title">Kecerdasan AI</h3>
+                <p class="feature-desc">Teknologi AI mutakhir untuk memahami dan merangkum konten</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3 class="feature-title">Cepat & Efisien</h3>
+                <p class="feature-desc">Dapatkan hasil dalam hitungan detik tanpa proses yang rumit</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Instant FactSnap &copy; 2025 - Rangkuman Fakta dari Tautan dan Gambar</p>
+            <p>Dihosting dengan GitHub Pages | 100% Client-side Processing</p>
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlInput = document.getElementById('url-input');
+            const fileInput = document.getElementById('file-input');
+            const processBtn = document.getElementById('process-btn');
+            const resultPlaceholder = document.getElementById('result-placeholder');
+            const resultContent = document.getElementById('result-content');
+            const loading = document.getElementById('loading');
+            const resultBody = document.getElementById('result-body');
+            const resultTitle = document.getElementById('result-title');
+            const sourceInfo = document.getElementById('source-info');
+            const sourceUrl = document.getElementById('source-url');
+            const imagePreview = document.getElementById('image-preview');
+            const previewImg = document.getElementById('preview-img');
+            
+            // Preview gambar yang diunggah
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        previewImg.src = event.target.result;
+                        imagePreview.style.display = 'block';
+                        urlInput.value = '';
+                    }
+                    
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+            
+            // Proses konten saat tombol ditekan
+            processBtn.addEventListener('click', function() {
+                const url = urlInput.value.trim();
+                const file = fileInput.files[0];
+                
+                if (!url && !file) {
+                    alert('Silakan masukkan tautan atau unggah gambar terlebih dahulu!');
+                    return;
+                }
+                
+                // Tampilkan loading
+                loading.style.display = 'block';
+                resultPlaceholder.style.display = 'none';
+                resultContent.style.display = 'none';
+                
+                // Simulasikan proses (dalam implementasi nyata, ini akan memanggil API)
+                setTimeout(() => {
+                    processContent(url, file);
+                }, 2000);
+            });
+            
+            // Fungsi untuk memproses konten
+            function processContent(url, file) {
+                loading.style.display = 'none';
+                resultPlaceholder.style.display = 'none';
+                resultContent.style.display = 'block';
+                
+                let contentTitle, contentSummary, facts;
+                
+                if (url) {
+                    contentTitle = "Pengaruh Teknologi AI pada Pendidikan Modern";
+                    contentSummary = "Artikel ini membahas transformasi pendidikan melalui integrasi kecerdasan buatan. Sistem AI mampu menyediakan pengalaman belajar personalisasi, analisis performa siswa secara real-time, dan pengembangan kurikulum adaptif.";
+                    facts = [
+                        "Sekitar 47% alat pembelajaran sudah mengintegrasikan AI dalam beberapa bentuk",
+                        "AI dapat mengurangi waktu persiapan mengajar hingga 30%",
+                        "Sistem AI mampu mengidentifikasi kesulitan belajar siswa 45% lebih cepat dibanding metode tradisional"
+                    ];
+                    sourceUrl.textContent = url;
+                    sourceInfo.style.display = 'block';
+                } else if (file) {
+                    contentTitle = "Analisis Gambar: Infografis Perubahan Iklim";
+                    contentSummary = "Gambar ini berisi infografis yang menjelaskan dampak perubahan iklim pada ekosistem laut. Data menunjukkan kenaikan suhu laut, pengasaman air, dan dampaknya pada terumbu karang serta spesies laut.";
+                    facts = [
+                        "Suhu laut global telah meningkat 0.13°C per dekade sejak 1901",
+                        "30% CO2 yang diemisikan diserap lautan, menyebabkan pengasaman",
+                        "Terumbu karang dunia telah menyusut 50% dalam 30 tahun terakhir"
+                    ];
+                    sourceInfo.style.display = 'none';
+                }
+                
+                // Tampilkan hasil
+                resultTitle.textContent = contentTitle;
+                
+                let resultHTML = `
+                    <div class="result-item">
+                        <h4 class="result-item-title"><i class="fas fa-file-contract"></i> Ringkasan Utama</h4>
+                        <p>${contentSummary}</p>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h4 class="result-item-title"><i class="fas fa-lightbulb"></i> Fakta Penting</h4>
+                        <ul style="padding-left: 20px; margin-top: 10px;">
+                `;
+                
+                facts.forEach(fact => {
+                    resultHTML += `<li style="margin-bottom: 10px;">${fact}</li>`;
+                });
+                
+                resultHTML += `
+                        </ul>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h4 class="result-item-title"><i class="fas fa-chart-line"></i> Analisis Lanjutan</h4>
+                        <p>${url ? 
+                            "Berdasarkan analisis lebih dari 15 sumber terkait, ditemukan bahwa implementasi AI dalam pendidikan menunjukkan peningkatan rata-rata 22% dalam retensi pengetahuan siswa. Namun, diperlukan pendekatan yang seimbang untuk mengatasi tantangan privasi data dan kesenjangan teknologi." : 
+                            "Data dari infografis menunjukkan tren yang mengkhawatirkan. Jika pemanasan global terus berlanjut pada tingkat saat ini, diperkirakan 90% terumbu karang dunia dapat mengalami pemutihan parah pada tahun 2050. Upaya konservasi dan pengurangan emisi karbon menjadi krusial."}
+                        </p>
+                    </div>
+                `;
+                
+                resultBody.innerHTML = resultHTML;
+            }
+            
+            // Contoh data untuk demo
+            urlInput.value = "https://contoh.com/artikel-pendidikan-ai";
+        });
+    </script>
+</body>
+</html>
